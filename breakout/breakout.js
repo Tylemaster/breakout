@@ -21,6 +21,8 @@ document.addEventListener('keydown', (event) => {
 
 var canvas = document.getElementById("theCanvas");
 var ctx = canvas.getContext("2d");
+var minSpeedSlider = document.getElementById("minSpeedSlider");
+var minSpeedValue = document.getElementById("minSpeedValue");
 
 var x = canvas.width / 2;
 var y = canvas.height - 30;
@@ -36,6 +38,11 @@ var playerY = y;
 var playerSpeed = 3;
 var playerLeft = false;
 var playerRight = false;
+
+minSpeedSlider.oninput = function() {
+    minSpeed = this.value;
+    minSpeedValue.innerHTML = this.value;
+}
 
 //Check collision with game window, and update velocity of ball if collision occurs
 function checkCollisonBallWindow() {

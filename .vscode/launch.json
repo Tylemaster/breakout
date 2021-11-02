@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch breakout.html",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "file": "${workspaceFolder}/breakout/breakout.html"
+        }
+    ]
+}
