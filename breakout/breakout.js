@@ -1,21 +1,3 @@
-//event listeners for moving left and right
-document.addEventListener('keydown', (event) => {
-    if (event.key == "ArrowLeft" || event.key == "a") {
-        playerLeft = true
-    }
-    else if (event.key == "ArrowRight" || event.key == "d") {
-        playerRight = true
-    }
-}, false);
-document.addEventListener('keyup', (event) => {
-    if (event.key == "ArrowLeft" || event.key == "a") {
-        playerLeft = false
-    }
-    else if (event.key == "ArrowRight" || event.key == "d") {
-        playerRight = false
-    }
-}, false);
-
 //grabbing page elements
 let canvas = document.getElementById("theCanvas");
 let ctx = canvas.getContext("2d");
@@ -26,18 +8,19 @@ let maxSpeedValue = document.getElementById("maxSpeedValue");
 
 
 //ball values
+let radius = 7;
 let xBall = canvas.width / 2;
-let yBall = canvas.height - 30;
+let yBall = (canvas.height / 2) + radius;
 let dxy = [-3, -3];
 let minSpeed = 2;
 let maxSpeed = 5;
-let radius = 10;
+
 
 //player variables
 let playerWidth = 40;
 let playerHeight = 10;
-let playerX = xBall;
-let playerY = yBall;
+let playerX = canvas.width / 2;
+let playerY = canvas.height - 30;
 let playerSpeed = 3;
 let playerLeft = false;
 let playerRight = false;
@@ -45,11 +28,11 @@ let playerRight = false;
 //brick variables
 let brickHp = 3;
 let bricksPerRow = 7;
-let brickWidth = 40;
-let brickHeight = 10;
-let brickRows = 1;
+let brickWidth = 50;
+let brickHeight = 15;
+let brickRows = 3;
 let brickHorizontalMargin = (canvas.width - (bricksPerRow * brickWidth))/(bricksPerRow + 1);
-console.log(brickHorizontalMargin);
+let brickVerticalMargin = ((canvas.height/2) - (brickRows * brickHeight))/(brickRows);
 let brickArray = [];
 
 //creating a brick object constructor
@@ -74,61 +57,94 @@ maxSpeedSlider.oninput = function () {
     maxSpeedValue.innerHTML = this.value;
 }
 
+//event listeners for moving left and right
+document.addEventListener('keydown', (event) => {
+    if (event.key == "ArrowLeft" || event.key == "a") {
+        playerLeft = true
+    }
+    else if (event.key == "ArrowRight" || event.key == "d") {
+        playerRight = true
+    }
+}, false);
+document.addEventListener('keyup', (event) => {
+    if (event.key == "ArrowLeft" || event.key == "a") {
+        playerLeft = false
+    }
+    else if (event.key == "ArrowRight" || event.key == "d") {
+        playerRight = false
+    }
+}, false);
+
+
 //populating array of brick objects
 createBrickArray = () => {
     let xIndex;
     let curXCoordinate;
     let rowIndex = 0;
+    let curYCoordinate = brickVerticalMargin;
     while(rowIndex < brickRows) {
         xIndex = 0;
         curXCoordinate = brickHorizontalMargin;
         while(xIndex <= bricksPerRow) {
-            let newBrick = new BreakoutBrick(curXCoordinate, rowIndex * brickHeight);
+            let newBrick = new BreakoutBrick(curXCoordinate, curYCoordinate);
             brickArray.push(newBrick);
             curXCoordinate += brickWidth + brickHorizontalMargin;
             xIndex++;
         }
-        // console.log(rowIndex)
         rowIndex++;
-        console.log(rowIndex)
+        curYCoordinate += brickHeight + brickVerticalMargin;
     }
-    // console.log(brickArray);
 }
 
 drawBricks = () => {
     for(const brick of brickArray){
-        // console.log(brick.xCoordinate);
+        switch(brick.hp){
+            case 3:
+                ctx.fillStyle = "#4FFF33";
+            case 2:
+                ctx.fillStyle = "#FFF633";
+            case 1:
+                ctx.fillStyle = "#FF3333"
+        }
+        ctx.beginPath();
         ctx.rect(brick.xCoordinate, brick.yCoordinate, brick.width, brick.height);
-        // console.log(brick);
-        // ctx.arc(brickArray.xCoordinate, brickArray.yCoordinate,10, 1, 360);
-        // ctx.rect(1, 5, 20, 20);
-        // console.l
+        ctx.fill();
+        ctx.closePath();
     }
-    // console.log(canvas.width, canvas.height);
 }
 
 //Check collision with game window, and update velocity of ball if collision occurs
 checkCollisonBallWindow = () => {
-    let randNum = Math.random();
     let xCollisonLeft = xBall - radius <= 0;
     let xCollisonRight = xBall + radius >= canvas.width;
     let yCollisonUp = yBall - radius <= 0;
     let yCollisionDown = yBall + radius >= canvas.height;
 
-    if ((xCollisonLeft || xCollisonRight) && (yCollisonUp || yCollisionDown)) {
-        xBall -= dxy[0];
-        yBall -= dxy[1];
+    ballCollisionResolving(xCollisonLeft||xCollisonRight, yCollisonUp);
+    if(yCollisionDown) {
+        xBall = canvas.width / 2;
+        yBall = (canvas.height / 2) + radius;
+        dxy = [-3, -3];
+        brickArray = [];
+        createBrickArray();
+    }
+}
+
+ballCollisionResolving = (xCollision, yCollision) => {
+    let randNum = Math.random();
+    if (xCollision && yCollision) {
+        // xBall -= (dxy[0]*2);
+        // yBall -= (dxy[1]*2);
         dxy[0] *= -(randNum + 0.5);
         dxy[1] *= -(randNum + 0.5);
-        xBall += Math.sin
     }
-    if (xCollisonLeft || xCollisonRight) {
-        xBall -= dxy[0];
+    if (xCollision) {
+        // xBall -= (dxy[0] * 2);
         dxy[0] *= -(randNum + 0.5)
         dxy[1] *= (randNum + 0.5)
     }
-    if (yCollisonUp || yCollisionDown) {
-        yBall -= dxy[1];
+    if (yCollision) {
+        // yBall -= (dxy[1] * 2);
         dxy[0] *= (randNum + 0.5)
         dxy[1] *= -(randNum + 0.5)
     }
@@ -144,6 +160,34 @@ checkCollisonBallWindow = () => {
     }
     if (Math.abs(dxy[1]) > maxSpeed) {
         dxy[1] = Math.sign(dxy[1]) * maxSpeed;
+    }
+}
+
+checkCollisionBallPlayer = () => {
+    ballCollisionResolving(false, ballLineCollisionDetection(playerX, playerX + playerWidth, playerY, playerY));
+}
+
+checkCollisonBallBricks = () => {
+    for( var brickIndex = 0; brickIndex < brickArray.length; brickIndex++){
+        let brickX1 = brickArray[brickIndex].xCoordinate;
+        let brickX2 = brickArray[brickIndex].xCoordinate + brickArray[brickIndex].width;
+        let brickY1 = brickArray[brickIndex].yCoordinate;
+        let brickY2 = brickArray[brickIndex].yCoordinate + brickArray[brickIndex].height;
+        if(ballLineCollisionDetection(brickX1, brickX2, brickY1, brickY1) || ballLineCollisionDetection(brickX1, brickX2, brickY2, brickY2)) {
+            ballCollisionResolving(false, true);
+            ballDamage(brickIndex);
+        }
+        else if(ballLineCollisionDetection(brickX1, brickX1, brickY1, brickY2) || ballLineCollisionDetection(brickX2, brickX2, brickY1, brickY2)) {
+            ballCollisionResolving(true, false);
+            ballDamage(brickIndex);
+        }
+    }
+}
+
+ballDamage = (brickIndex) => {
+    brickArray[brickIndex].hp--;
+    if(brickArray[brickIndex].hp <= 0) {
+        brickArray.splice(brickIndex, 1);
     }
 }
 
@@ -166,11 +210,18 @@ updatePositions = () => {
     }
 }
 
+ballLineCollisionDetection = (lineX1, lineX2, lineY1, lineY2) => {
+    let centreX = (lineX2 + lineX1)/2;
+    let centreY = (lineY2 + lineY1)/2;
+    let circleToCentreLength = Math.sqrt(((xBall-centreX)**2) + ((yBall - centreY)**2));
+    return((radius) >= circleToCentreLength);
+}
+
 gameUpdate = () => {
     //move into a function that draws all objects on screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
     drawBricks();
+    ctx.beginPath();
     ctx.arc(xBall, yBall, radius, 0, Math.PI * 2);
     ctx.rect(playerX, playerY, playerWidth, playerHeight);
     ctx.fillStyle = "#0095DD";
@@ -178,8 +229,8 @@ gameUpdate = () => {
     ctx.closePath();
     checkCollisonBallWindow();
     checkCollisionPlayerWindow();
-    //check ball - player collision
-    //check ball - rectangle collison
+    checkCollisionBallPlayer();
+    checkCollisonBallBricks();
     //update
     updatePositions()
 
