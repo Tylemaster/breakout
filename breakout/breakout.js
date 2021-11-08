@@ -44,9 +44,12 @@ let playerRight = false;
 
 //brick variables
 let brickHp = 3;
-let brickWidth = 50;
-let brickHeight = 20;
-let brickRows = 4;
+let bricksPerRow = 7;
+let brickWidth = 40;
+let brickHeight = 10;
+let brickRows = 1;
+let brickHorizontalMargin = (canvas.width - (bricksPerRow * brickWidth))/(bricksPerRow + 1);
+console.log(brickHorizontalMargin);
 let brickArray = [];
 
 //creating a brick object constructor
@@ -73,14 +76,35 @@ maxSpeedSlider.oninput = function () {
 
 //populating array of brick objects
 createBrickArray = () => {
-    xIndex = 0;
-    rowIndex = 0;
-    while(rowIndex <= brickRows) {
-        while(xIndex + brickWidth <= canvas.width) {
-            newBrick = BreakoutBrick(xIndex * brickWidth, rowIndex * brickHeight);
-            brickArray.append(newBrick);
+    let xIndex;
+    let curXCoordinate;
+    let rowIndex = 0;
+    while(rowIndex < brickRows) {
+        xIndex = 0;
+        curXCoordinate = brickHorizontalMargin;
+        while(xIndex <= bricksPerRow) {
+            let newBrick = new BreakoutBrick(curXCoordinate, rowIndex * brickHeight);
+            brickArray.push(newBrick);
+            curXCoordinate += brickWidth + brickHorizontalMargin;
+            xIndex++;
         }
+        // console.log(rowIndex)
+        rowIndex++;
+        console.log(rowIndex)
     }
+    // console.log(brickArray);
+}
+
+drawBricks = () => {
+    for(const brick of brickArray){
+        // console.log(brick.xCoordinate);
+        ctx.rect(brick.xCoordinate, brick.yCoordinate, brick.width, brick.height);
+        // console.log(brick);
+        // ctx.arc(brickArray.xCoordinate, brickArray.yCoordinate,10, 1, 360);
+        // ctx.rect(1, 5, 20, 20);
+        // console.l
+    }
+    // console.log(canvas.width, canvas.height);
 }
 
 //Check collision with game window, and update velocity of ball if collision occurs
@@ -99,10 +123,6 @@ checkCollisonBallWindow = () => {
         xBall += Math.sin
     }
     if (xCollisonLeft || xCollisonRight) {
-        console.log(xBall);
-        console.log(dxy[0]);
-        console.log(yBall);
-        console.log(dxy[1]);
         xBall -= dxy[0];
         dxy[0] *= -(randNum + 0.5)
         dxy[1] *= (randNum + 0.5)
@@ -150,6 +170,7 @@ gameUpdate = () => {
     //move into a function that draws all objects on screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
+    drawBricks();
     ctx.arc(xBall, yBall, radius, 0, Math.PI * 2);
     ctx.rect(playerX, playerY, playerWidth, playerHeight);
     ctx.fillStyle = "#0095DD";
@@ -166,6 +187,8 @@ gameUpdate = () => {
 }
 
 main = () => {
+    createBrickArray();
+    console.log(brickArray);
     setInterval(gameUpdate, 10);
 }
 main();
