@@ -6,34 +6,34 @@ let minSpeedValue = document.getElementById("minSpeedValue");
 let maxSpeedSlider = document.getElementById("maxSpeedSlider");
 let maxSpeedValue = document.getElementById("maxSpeedValue");
 
-
-//ball values
-let radius = 7;
-let xBall = canvas.width / 2;
-let yBall = (canvas.height / 2) + radius;
-let dxy = [-3, -3];
-let minSpeed = 2;
-let maxSpeed = 5;
-
-
 //player variables
 let playerWidth = 40;
 let playerHeight = 10;
 let playerX = canvas.width / 2;
 let playerY = canvas.height - 30;
-let playerSpeed = 3;
+let playerSpeed = 5;
 let playerLeft = false;
 let playerRight = false;
 
 //brick variables
 let brickHp = 3;
-let bricksPerRow = 7;
+let bricksPerRow = 3;
 let brickWidth = 50;
 let brickHeight = 15;
-let brickRows = 3;
+let brickRows = 7;
 let brickHorizontalMargin = (canvas.width - (bricksPerRow * brickWidth))/(bricksPerRow + 1);
 let brickVerticalMargin = ((canvas.height/2) - (brickRows * brickHeight))/(brickRows);
 let brickArray = [];
+
+//ball values
+let radius = 7;
+let ballStart = [canvas.width / 2, (canvas.height / 2) + radius + brickHeight]
+let xBall = ballStart[0];
+let yBall = ballStart[1];
+let initialBallSpeed = 2;
+let dxy = [initialBallSpeed, initialBallSpeed];
+let minSpeed = 2;
+let maxSpeed = 4;
 
 //creating a brick object constructor
 function BreakoutBrick(x,y) {
@@ -97,17 +97,18 @@ createBrickArray = () => {
 }
 
 drawBricks = () => {
-    for(const brick of brickArray){
-        switch(brick.hp){
-            case 3:
-                ctx.fillStyle = "#4FFF33";
-            case 2:
-                ctx.fillStyle = "#FFF633";
-            case 1:
-                ctx.fillStyle = "#FF3333"
-        }
+    for(let brick of brickArray){
         ctx.beginPath();
         ctx.rect(brick.xCoordinate, brick.yCoordinate, brick.width, brick.height);
+        if(brick.hp == 3){
+            ctx.fillStyle = "#4FFF33";
+        }
+        else if(brick.hp == 2) {
+            ctx.fillStyle = "#FFF633";
+        }
+        else {
+            ctx.fillStyle = "#FF3333"
+        }
         ctx.fill();
         ctx.closePath();
     }
@@ -122,9 +123,9 @@ checkCollisonBallWindow = () => {
 
     ballCollisionResolving(xCollisonLeft||xCollisonRight, yCollisonUp);
     if(yCollisionDown) {
-        xBall = canvas.width / 2;
-        yBall = (canvas.height / 2) + radius;
-        dxy = [-3, -3];
+        xBall = ballStart[0];
+        yBall = ballStart[1];
+        dxy = [initialBallSpeed, initialBallSpeed];
         brickArray = [];
         createBrickArray();
     }
@@ -133,18 +134,18 @@ checkCollisonBallWindow = () => {
 ballCollisionResolving = (xCollision, yCollision) => {
     let randNum = Math.random();
     if (xCollision && yCollision) {
-        // xBall -= (dxy[0]*2);
-        // yBall -= (dxy[1]*2);
+        xBall -= dxy[0];
+        yBall -= dxy[1];
         dxy[0] *= -(randNum + 0.5);
         dxy[1] *= -(randNum + 0.5);
     }
     if (xCollision) {
-        // xBall -= (dxy[0] * 2);
+        xBall -= dxy[0];
         dxy[0] *= -(randNum + 0.5)
         dxy[1] *= (randNum + 0.5)
     }
     if (yCollision) {
-        // yBall -= (dxy[1] * 2);
+        yBall -= dxy[1];
         dxy[0] *= (randNum + 0.5)
         dxy[1] *= -(randNum + 0.5)
     }
@@ -164,7 +165,7 @@ ballCollisionResolving = (xCollision, yCollision) => {
 }
 
 checkCollisionBallPlayer = () => {
-    ballCollisionResolving(false, ballLineCollisionDetection(playerX, playerX + playerWidth, playerY, playerY));
+    ballCollisionResolving((ballLineCollisionDetection(playerX + playerWidth, playerX + playerWidth, playerY, playerY + playerHeight) || ballLineCollisionDetection(playerX, playerX, playerY, playerY +  playerY + playerHeight)), ballLineCollisionDetection(playerX, playerX + playerWidth, playerY, playerY));
 }
 
 checkCollisonBallBricks = () => {
@@ -211,10 +212,56 @@ updatePositions = () => {
 }
 
 ballLineCollisionDetection = (lineX1, lineX2, lineY1, lineY2) => {
-    let centreX = (lineX2 + lineX1)/2;
-    let centreY = (lineY2 + lineY1)/2;
-    let circleToCentreLength = Math.sqrt(((xBall-centreX)**2) + ((yBall - centreY)**2));
-    return((radius) >= circleToCentreLength);
+  //chane toi balls
+
+    let dx = lineX2 - lineX1;
+    let dy = lineY2 - lineY1;
+
+    let sx = lineX1 - xBall;
+    let sy = lineY1 - yBall;
+
+
+    let tx = lineX2 - xBall;
+    let ty = lineY2 - yBall;
+
+    if(tx**2 + ty**2 < radius**2){
+        return true;
+    }
+
+
+    let c = (sx**2) + (sy**2) - (radius**2);
+    // console.log(c);
+    if(c < 0){
+        return true;
+    }
+
+    let b = 2 * (dx * sx + dy * sy);
+    let a = dx**2 + dy**2;
+
+    if(Math.abs < 1.0e-12) {
+        return false;
+    }
+
+    var discr = b**2 - 4 * a * c;
+
+    if(discr < 0 ){
+        return false;
+    }
+
+    discr = Math.sqrt(discr);
+
+    var k1 = (-b - discr) / (2 * a);
+    if(k1 >=0 && k1 <= 1){
+        return true;
+    }
+    var k2 = (-b + discr) / (2 * a);
+    if(k2 >=0 && k2 <= 1){
+        return true;
+    }
+    return false;
+
+    // let circleToCentreLength = Math.sqrt(((xBall-centreX)**2) + ((yBall - centreY)**2));
+    // return((radius) >= circleToCentreLength);
 }
 
 gameUpdate = () => {
