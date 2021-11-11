@@ -224,11 +224,14 @@ ballLineCollisionDetection = (lineX1, lineX2, lineY1, lineY2) => {
     let tx = lineX2 - xBall;
     let ty = lineY2 - yBall;
 
+    //check if one end of line segment falls within circle using pythagorean theorem
+    //in other words, if the length of the line between the endpoint and the centre of the circle is less than the radius
+    //of the circle, that means the point is within the circle
     if(tx**2 + ty**2 < radius**2){
         return true;
     }
 
-
+    //again checking if the 
     let c = (sx**2) + (sy**2) - (radius**2);
     // console.log(c);
     if(c < 0){

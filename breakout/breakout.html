@@ -1,20 +1,75 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset = "utf-8" />
-        <title>Breakout!!!</title>
-        <style>
-            *{padding:0; margin: 0;}
-            canvas {background: #eee; border-style:solid; display: block; margin: 0 auto;}
-        </style>
-    </head>
-    <body>
-        <canvas id="theCanvas" width="480" height="320"></canvas>
-        <input id="minSpeedSlider" label = "Minimum Ball Speed" type="range" min="1" max="10" value="1" class="slider">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Breakout!!!</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: #eee;
+            border-style: solid;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="theCanvas" width="480" height="320"></canvas>
+    <form>
+        <input id="canvasWidth" label="Game Canvas Width" type="text" value=480>
+        <input id="canvasLength" label="Game Canvas Length" type="text" value=320>
+
+
+        <input id="playerWidth" label="Player Width" type="text" value=40>
+        <input id="playerHeight" label="Player Height" type="text" value=10>
+        <input id="playerX" label="Player Width" type="text">
+        <!-- <input id="playerWidth" label="Player Width" type="text">
+        <input id="playerWidth" label="Player Width" type="text">
+        <input id="playerWidth" label="Player Width" type="text">
+        <input id="playerWidth" label="Player Width" type="text"> -->
+
+        <!-- //player variables
+let playerWidth = 40;
+let playerHeight = 10;
+let playerX = canvas.width / 2;
+let playerY = canvas.height - 30;
+let playerSpeed = 5;
+let playerLeft = false;
+let playerRight = false;
+
+//brick variables
+let brickHp = 3;
+let bricksPerRow = 3;
+let brickWidth = 50;
+let brickHeight = 15;
+let brickRows = 7;
+let brickHorizontalMargin = (canvas.width - (bricksPerRow * brickWidth))/(bricksPerRow + 1);
+let brickVerticalMargin = ((canvas.height/2) - (brickRows * brickHeight))/(brickRows);
+let brickArray = [];
+
+//ball values
+let radius = 7;
+let ballStart = [canvas.width / 2, (canvas.height / 2) + radius + brickHeight]
+let xBall = ballStart[0];
+let yBall = ballStart[1];
+let initialBallSpeed = 2;
+let dxy = [initialBallSpeed, initialBallSpeed];
+let minSpeed = 2;
+let maxSpeed = 4; -->
+        <!-- <input id="minSpeedSlider" label="Minimum Ball Speed" type="range" min="1" max="10" value="1" class="slider">
         <p id="minSpeedValue">1</p>
-        <input id="maxSpeedSlider" label = "Maximum Ball Speed" type="range" min="11" max="40" value="2" class="slider">
-        <p id="maxSpeedValue">2</p>
-        <Script src = "breakout.js"></Script>
-    </body>
+        <input id="maxSpeedSlider" label="Maximum Ball Speed" type="range" min="11" max="40" value="2" class="slider">
+        <p id="maxSpeedValue">2</p> -->
+
+    </form>
+    <Script src="breakout.js"></Script>
+</body>
+
 </html>
