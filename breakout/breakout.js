@@ -1,10 +1,10 @@
 //grabbing page elements
 let canvas = document.getElementById("theCanvas");
 let ctx = canvas.getContext("2d");
-let minSpeedSlider = document.getElementById("minSpeedSlider");
-let minSpeedValue = document.getElementById("minSpeedValue");
-let maxSpeedSlider = document.getElementById("maxSpeedSlider");
-let maxSpeedValue = document.getElementById("maxSpeedValue");
+// let minSpeedSlider = document.getElementById("minSpeedSlider");
+// let minSpeedValue = document.getElementById("minSpeedValue");
+// let maxSpeedSlider = document.getElementById("maxSpeedSlider");
+// let maxSpeedValue = document.getElementById("maxSpeedValue");
 
 //player variables
 let playerWidth = 40;
@@ -45,17 +45,17 @@ function BreakoutBrick(x,y) {
 }
 
 
-//update min speed based on user input to slider
-minSpeedSlider.oninput = function () {
-    minSpeed = this.value;
-    minSpeedValue.innerHTML = this.value;
-}
+// //update min speed based on user input to slider
+// minSpeedSlider.oninput = function () {
+//     minSpeed = this.value;
+//     minSpeedValue.innerHTML = this.value;
+// }
 
-//update max speed based on user input to slider
-maxSpeedSlider.oninput = function () {
-    maxSpeed = this.value;
-    maxSpeedValue.innerHTML = this.value;
-}
+// //update max speed based on user input to slider
+// maxSpeedSlider.oninput = function () {
+//     maxSpeed = this.value;
+//     maxSpeedValue.innerHTML = this.value;
+// }
 
 //event listeners for moving left and right
 document.addEventListener('keydown', (event) => {

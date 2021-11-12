@@ -12,7 +12,7 @@
         }
 
         canvas {
-            background: #eee;
+            background: rgb(55, 119, 53);
             border-style: solid;
             display: block;
             margin: 0 auto;
@@ -23,17 +23,28 @@
 <body>
     <canvas id="theCanvas" width="480" height="320"></canvas>
     <form>
-        <input id="canvasWidth" label="Game Canvas Width" type="text" value=480>
-        <input id="canvasLength" label="Game Canvas Length" type="text" value=320>
+        <div>
+            <label for="canvasWidth">Game Canvas Width:</label>
+            <input id="canvasWidth" type="number" value=480>
+            <label for="canvasLength">Game Canvas Length:</label>
+            <input id="canvasLength" type="number" value=320>
+        </div>
+
+        <div>
+            <label for="playerWidth">Player Width:</label>
+            <input id="playerWidth" type="number" value=40>
+            <label for="playerHeight">Player Height:</label>
+            <input id="playerHeight" type="number" value=10>
+            <label for="playerX">Player Starting X Coordinate:</label>
+            <input id="playerX" type="number" value=240>
+            <label for="playerY">Player Starting Y Coordinate:</label>
+            <input id="playerY" type="number" value=290>
+            <label for="playerSpeed">Player Initial Speed:</label>
+            <input id="playerSpeed" type="number" value=5>
+        </div>
 
 
-        <input id="playerWidth" label="Player Width" type="text" value=40>
-        <input id="playerHeight" label="Player Height" type="text" value=10>
-        <input id="playerX" label="Player Width" type="text">
-        <!-- <input id="playerWidth" label="Player Width" type="text">
-        <input id="playerWidth" label="Player Width" type="text">
-        <input id="playerWidth" label="Player Width" type="text">
-        <input id="playerWidth" label="Player Width" type="text"> -->
+
 
         <!-- //player variables
 let playerWidth = 40;
